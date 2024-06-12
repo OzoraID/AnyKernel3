@@ -54,7 +54,7 @@ dump_boot;
   ui_print "2";
   sleep 1
   ui_print "3";
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+  ui_print "x-----------------------------------------------x";
 
 # Keycheck
 INSTALLER=$(pwd)
@@ -122,37 +122,39 @@ abort_main(){
 # Install Kernel
 
 # Clear
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+  ui_print "x-----------------------------------------------x";
   ui_print "1";
   sleep 1
   ui_print "2";
   sleep 1
   ui_print "3";
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+  ui_print "x-----------------------------------------------x";
   sleep 1
 
 kernel_image=$home/kernel/
 if [[ -f $kernel_image/NSE/Image.gz-dtb ]] || [[ -f $kernel_image/SE/Image.gz-dtb ]]; then
 	ui_print "Choose Kernel Version.. "
-	ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	ui_print "x-----------------------------------------------x"
   sleep 1
-	ui_print "NSE (non system ext) Or SE (system ext) ?"
-	ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	ui_print "NSE ( No System Ext )"
+  sleep 1
+        ui_print "SE ( System Ext ) "
+	ui_print "x-----------------------------------------------x"
   sleep 1
 	ui_print "1. NSE : a9-a11"
   ui_print " "
   sleep 1
 	ui_print "2. SE : a12-a14"
   sleep 1
-	ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	ui_print "x-----------------------------------------------x"
 	ui_print " Vol+ = NSE, Vol- = SE "
-	ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	ui_print "x-----------------------------------------------x"
   sleep 1
 	ui_print "1. NSE Version "
   ui_print " "
   sleep 1
 	ui_print "2. SE Version "
-	ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	ui_print "x-----------------------------------------------x"
   sleep 2
   ui_print " "
 
@@ -197,4 +199,3 @@ fi;
 
 write_boot;
 ## end boot install
-
