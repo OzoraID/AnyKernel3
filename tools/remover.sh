@@ -6,10 +6,8 @@
   ui_print " ";
   ui_print " ";
   ui_print "Removing Junk from other kernel...";
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
   sleep 1 ;
   ui_print "Loading ... ";
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
   sleep 1 ;
 
 if [ -f $ramdisk/overlay.d/init.LawRun.rc ]; then
@@ -320,7 +318,4 @@ remove_line $ramdisk/init.rc "import /init.LawRun-Profiles.rc";
 sleep 2 ;
 
   ui_print "Removing Junk Finish...";
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
   sleep 1 ;
-  ui_print "Next ...";
-  ui_print "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
