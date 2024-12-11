@@ -46,28 +46,28 @@ dump_boot;
 # begin ramdisk changes
 
 # Import Remover
-. /tmp/anykernel/tools/remover.sh;
+. /tmp/anykernel/tools/remover.sh
 
 # Keycheck
 INSTALLER=$(pwd)
-KEYCHECK=$INSTALLER/tools/keycheck
-chmod 755 $KEYCHECK
+KEYCHECK="$INSTALLER/tools/keycheck"
+chmod 755 "$KEYCHECK"
 
 keytest() {
-    (/system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $INSTALLER/events) || return 1
+    /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > "$INSTALLER/events" || return 1
     return 0
 }
 
 choose() {
     # note from chainfire @xda-developers: getevent behaves weird when piped, and busybox grep likes that even less than toolbox/toybox grep
     while true; do
-        /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > $INSTALLER/events
-        if (`cat $INSTALLER/events 2>/dev/null | /system/bin/grep VOLUME >/dev/null`); then
+        /system/bin/getevent -lc 1 2>&1 | /system/bin/grep VOLUME | /system/bin/grep " DOWN" > "$INSTALLER/events"
+        if cat "$INSTALLER/events" 2>/dev/null | /system/bin/grep VOLUME >/dev/null; then
             break
         fi
     done
 
-    if (`cat $INSTALLER/events 2>/dev/null | /system/bin/grep VOLUMEUP >/dev/null`); then
+    if cat "$INSTALLER/events" 2>/dev/null | /system/bin/grep VOLUMEUP >/dev/null; then
         return 0
     else
         return 1
@@ -75,87 +75,76 @@ choose() {
 }
 
 chooseportold() {
-  # Calling it first time detects previous input. Calling it second time will do what we want
-  $bin/keycheck
-  $bin/keycheck
-  SEL=$?
-  if [ "$1" == "UP" ]; then
-    UP=$SEL
-  elif [ "$1" == "DOWN" ]; then
-    DOWN=$SEL
-  elif [ $SEL -eq $UP ]; then
-    return 0
-  elif [ $SEL -eq $DOWN ]; then
-    return 1
-  else
-    abort "Vol key not detected!!!"
-  fi
+    # Calling it first time detects previous input. Calling it second time will do what we want
+    $bin/keycheck
+    $bin/keycheck
+    SEL=$?
+    if [ "$1" == "UP" ]; then
+        UP=$SEL
+    elif [ "$1" == "DOWN" ]; then
+        DOWN=$SEL
+    elif [ $SEL -eq $UP ]; then
+        return 0
+    elif [ $SEL -eq $DOWN ]; then
+        return 1
+    else
+        abort "Vol key not detected!!!"
+    fi
 }
 
-if keytest; then
-  FUNCTION=chooseport
-else
-  FUNCTION=chooseportold
-  ui_print "Press Vol Up Again..."
-  ui_print " "
-  $FUNCTION "UP"
-  ui_print "Press Vol Down..."
-  $FUNCTION "DOWN"
-fi
-
-abort_main(){
-  ui_print " "
-	ui_print "Image not found"
-	ui_print "Aborting install kernel :"
-  ui_print " "
-	abort;
+abort_main() {
+    ui_print " "
+    ui_print "Image not found"
+    ui_print "Aborting install kernel:"
+    ui_print " "
+    abort
 }
 
 # Install Kernel
+kernel_image="$INSTALLER/kernel"
 
-kernel_image=$home/kernel/
-if [[ -f $kernel_image/NSE/Image.gz-dtb ]] || [[ -f $kernel_image/SE/Image.gz-dtb ]]; then
-	ui_print "Choose Kernel Version.. "
-	ui_print "x--------------------------------x"
- sleep 1
-	ui_print "NSE ( No System Ext : a9-11 )"
-        ui_print "SE ( System Ext : a12-14 ) "
-	ui_print "x--------------------------------x"
- sleep 1
-	ui_print "Vol+ NSE Version "
-	ui_print "Vol- SE Version "
-	ui_print "x--------------------------------x"
-  sleep 1
-  ui_print " "
+if [[ -f "$kernel_image/NSE/Image.gz-dtb" ]] || [[ -f "$kernel_image/SE/Image.gz-dtb" ]]; then
+    ui_print "Choose Kernel Version.. "
+    ui_print "x--------------------------------x"
+    sleep 1
+    ui_print "NSE ( No System Ext : a9-11 )"
+    ui_print "SE ( System Ext : a12-14 ) "
+    ui_print "x--------------------------------x"
+    sleep 1
+    ui_print "Vol+ NSE Version "
+    ui_print "Vol- SE Version "
+    ui_print "x--------------------------------x"
+    sleep 1
+    ui_print " "
 
-	if $FUNCTION; then
-  ui_print "-> Kernel NSE selected.."
-  ui_print "-> Wait... "
-  sleep 2
-  ui_print "-> Kernel NSE Installed"
-	if [[ -f $kernel_image/NSE/Image.gz-dtb ]]; then
-	cp $kernel_image/NSE/Image.gz-dtb $home/Image.gz-dtb
-		else
-			abort_main;
-		fi;
-	else
-  ui_print "-> Kernel SE selected.."
-  ui_print "-> Wait... "
-  sleep 2
-  ui_print "-> Kernel SE Installed "
-	if [[ -f $kernel_image/SE/Image.gz-dtb ]]; then
-	cp $kernel_image/SE/Image.gz-dtb $home/Image.gz-dtb
-		else
-			abort_main;
-		fi;
-	fi
+    if $FUNCTION; then
+        ui_print "-> Kernel NSE selected.."
+        ui_print "-> Wait... "
+        sleep 2
+        ui_print "-> Kernel NSE Installed"
+        if [[ -f "$kernel_image/NSE/Image.gz-dtb" ]]; then
+            cp "$kernel_image/NSE/Image.gz-dtb" "$INSTALLER/Image.gz-dtb"
+        else
+            abort_main
+        fi
+    else
+        ui_print "-> Kernel SE selected.."
+        ui_print "-> Wait... "
+        sleep 2
+        ui_print "-> Kernel SE Installed"
+        if [[ -f "$kernel_image/SE/Image.gz-dtb" ]]; then
+            cp "$kernel_image/SE/Image.gz-dtb" "$INSTALLER/Image.gz-dtb"
+        else
+            abort_main
+        fi
+    fi
 
-  ui_print " "
-  ui_print "-> Installing Kurumi Kernel "
-	ui_print "-> Enjoy... "
+    ui_print " "
+    ui_print "-> Installing Kurumi Kernel "
+    ui_print "-> Enjoy... "
 else
-	abort_main;
-fi;
+    abort_main
+fi
 
 # Selinux Permissive
 #patch_cmdline androidboot.selinux androidboot.selinux=permissive
