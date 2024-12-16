@@ -92,6 +92,18 @@ chooseportold() {
     fi
 }
 
+if keytest; then
+        FUNCTION=chooseport
+    else
+        FUNCTION=chooseportold
+        ui_print "Press Vol Up Again..."
+        ui_print " "
+        $FUNCTION "UP"
+        ui_print "Press Vol Down..."
+        ui_print " "
+        $FUNCTION "DOWN"
+    fi
+    
 abort_main() {
     ui_print " "
     ui_print "Image not found"
@@ -101,7 +113,7 @@ abort_main() {
 }
 
 # Install Kernel
-kernel_image="$INSTALLER/kernel"
+kernel_image="$home/kernel"
 
 if [[ -f "$kernel_image/NSE/Image.gz-dtb" ]] || [[ -f "$kernel_image/SE/Image.gz-dtb" ]]; then
     ui_print "Choose Kernel Version.. "
@@ -123,7 +135,7 @@ if [[ -f "$kernel_image/NSE/Image.gz-dtb" ]] || [[ -f "$kernel_image/SE/Image.gz
         sleep 2
         ui_print "-> Kernel NSE Installed"
         if [[ -f "$kernel_image/NSE/Image.gz-dtb" ]]; then
-            cp "$kernel_image/NSE/Image.gz-dtb" "$INSTALLER/Image.gz-dtb"
+            cp "$kernel_image/NSE/Image.gz-dtb" "$home/Image.gz-dtb"
         else
             abort_main
         fi
@@ -133,7 +145,7 @@ if [[ -f "$kernel_image/NSE/Image.gz-dtb" ]] || [[ -f "$kernel_image/SE/Image.gz
         sleep 2
         ui_print "-> Kernel SE Installed"
         if [[ -f "$kernel_image/SE/Image.gz-dtb" ]]; then
-            cp "$kernel_image/SE/Image.gz-dtb" "$INSTALLER/Image.gz-dtb"
+            cp "$kernel_image/SE/Image.gz-dtb" "$home/Image.gz-dtb"
         else
             abort_main
         fi
