@@ -4,10 +4,10 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=Ryzen Kernel by Ryuzenn @ telegram
+kernel.string=
 do.devicecheck=1
-do.modules=1
-do.systemless=0
+do.modules=0
+do.systemless=1
 do.cleanup=1
 do.cleanuponabort=0
 device.name1=
@@ -15,7 +15,7 @@ device.name2=ginkgo
 device.name3=willow
 device.name4=
 device.name5=
-supported.versions=8 - 15
+supported.versions=11 - 15
 supported.patchlevels=
 supported.vendorpatchlevels=
 '; } # end properties
