@@ -4,14 +4,14 @@
 ### AnyKernel setup
 # global properties
 properties() { '
-kernel.string=neophyte kernel by k4ngcaribug @ telegram
+kernel.string=
 do.devicecheck=1
 do.modules=1
 do.systemless=0
 do.cleanup=1
 do.cleanuponabort=0
 device.name1=ginkgo
-device.name2=
+device.name2=willow
 device.name3=
 device.name4=
 device.name5=
