@@ -15,7 +15,7 @@ device.name2=bhima
 device.name3=
 device.name4=
 device.name5=
-supported.versions=11 - 15
+supported.versions=11 - 16
 supported.patchlevels=
 supported.vendorpatchlevels=
 '; } # end properties
