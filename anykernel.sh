@@ -10,8 +10,8 @@ do.modules=0
 do.systemless=1
 do.cleanup=1
 do.cleanuponabort=0
-device.name1=vayu
-device.name2=bhima
+device.name1=surya
+device.name2=karna
 device.name3=
 device.name4=
 device.name5=
@@ -55,8 +55,6 @@ patch_fstab fstab.tuna /system ext4 options "noatime,barrier=1" "noatime,nodirat
 patch_fstab fstab.tuna /cache ext4 options "barrier=1" "barrier=0,nomblk_io_submit";
 patch_fstab fstab.tuna /data ext4 options "data=ordered" "nomblk_io_submit,data=writeback";
 append_file fstab.tuna "usbdisk" fstab;
-
-. $bin/kyriepatch.sh;
 
 write_boot; # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
 ## end boot install
