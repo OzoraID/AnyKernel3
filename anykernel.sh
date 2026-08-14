@@ -28,6 +28,47 @@ set_perm_recursive 0 0 755 644 $ramdisk/*;
 set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
 } # end attributes
 
+# begin build.prop loader
+load_build_props() {
+    if [ ! -f "/system/build.prop" ] && [ ! -f "/system_root/system/build.prop" ]; then
+        mount /system 2>/dev/null || mount /system_root 2>/dev/null
+    fi
+
+    if [ -f "/system/build.prop" ]; then
+        SYSTEM_BUILD_PROP="/system/build.prop"
+    elif [ -f "/system_root/system/build.prop" ]; then
+        SYSTEM_BUILD_PROP="/system_root/system/build.prop"
+    fi
+
+    if [ -n "$SYSTEM_BUILD_PROP" ]; then
+        PROP_MIUI=$(file_getprop "$SYSTEM_BUILD_PROP" ro.miui.ui.version.code)
+    fi
+} # end build.prop loader
+
+# begin legacy bootargs patch
+patch_legacy_bootargs() {
+    ui_print " "
+
+    if [ -n "$PROP_MIUI" ]; then
+        ui_print "MIUI $PROP_MIUI detected, defaulting to legacy bootargs"
+        patch_cmdline init.is_legacy_timestamp init.is_legacy_timestamp=1
+        return
+    fi
+
+    if [ "$ANDROID_VERSION" -lt 13 ]; then
+        ui_print "Enabling legacy timestamp bootarg..."
+        patch_cmdline init.is_legacy_timestamp init.is_legacy_timestamp=1
+    else
+        ui_print "Disabling legacy timestamp bootarg..."
+        patch_cmdline init.is_legacy_timestamp init.is_legacy_timestamp=0
+    fi
+} # end legacy bootargs patch
+
+# Android version strings
+if [ -f "$AKHOME/android_ver" ]; then
+    ANDROID_VERSION=$(cat "$AKHOME/android_ver")
+fi
+
 # boot shell variables
 block=auto;
 is_slot_device=0;
@@ -39,6 +80,10 @@ patch_vbmeta_flag=auto;
 
 # boot install
 dump_boot; # use split_boot to skip ramdisk unpack, e.g. for devices with init_boot ramdisk
+
+# patch legacy
+load_build_props;
+patch_legacy_bootargs;
 
 # init.rc
 backup_file init.rc;
@@ -58,63 +103,3 @@ append_file fstab.tuna "usbdisk" fstab;
 
 write_boot; # use flash_boot to skip ramdisk repack, e.g. for devices with init_boot ramdisk
 ## end boot install
-
-
-## init_boot files attributes
-#init_boot_attributes() {
-#set_perm_recursive 0 0 755 644 $ramdisk/*;
-#set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
-#} # end attributes
-
-# init_boot shell variables
-#block=init_boot;
-#is_slot_device=1;
-#ramdisk_compression=auto;
-#patch_vbmeta_flag=auto;
-
-# reset for init_boot patching
-#reset_ak;
-
-# init_boot install
-#dump_boot; # unpack ramdisk since it is the new first stage init ramdisk where overlay.d must go
-
-#write_boot;
-## end init_boot install
-
-
-## vendor_kernel_boot shell variables
-#block=vendor_kernel_boot;
-#is_slot_device=1;
-#ramdisk_compression=auto;
-#patch_vbmeta_flag=auto;
-
-# reset for vendor_kernel_boot patching
-#reset_ak;
-
-# vendor_kernel_boot install
-#split_boot; # skip unpack/repack ramdisk, e.g. for dtb on devices with hdr v4 and vendor_kernel_boot
-
-#flash_boot;
-## end vendor_kernel_boot install
-
-
-## vendor_boot files attributes
-#vendor_boot_attributes() {
-#set_perm_recursive 0 0 755 644 $ramdisk/*;
-#set_perm_recursive 0 0 750 750 $ramdisk/init* $ramdisk/sbin;
-#} # end attributes
-
-# vendor_boot shell variables
-#block=vendor_boot;
-#is_slot_device=1;
-#ramdisk_compression=auto;
-#patch_vbmeta_flag=auto;
-
-# reset for vendor_boot patching
-#reset_ak;
-
-# vendor_boot install
-#dump_boot; # use split_boot to skip ramdisk unpack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
-
-#write_boot; # use flash_boot to skip ramdisk repack, e.g. for dtb on devices with hdr v4 but no vendor_kernel_boot
-## end vendor_boot install
